@@ -79,6 +79,7 @@ async def on_message(message):
   if msg.startswith('$'):
     if unique(au.id) and not msg[1:].startswith('reg'):
       await message.channel.send('Use "$reg name" to register')
+      return
     
     if msg[1:].startswith('reg '):
       if unique(au.id):
