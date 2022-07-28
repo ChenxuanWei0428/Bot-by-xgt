@@ -1,3 +1,3 @@
 # Bot-by-xgt
 
-This is a bot created by 3211#5327 on discord
+This is a bot created by a handsome guy on discord
