@@ -20,8 +20,27 @@ sword = ['剑士', 100, 20, 5, 30]
 shield = ['轻甲卫兵', 110, 25, 5, 35]
 junkman = ['拾荒者', 200, 35, 10, 40]
 ausking = ['奥神', 99999, 5000, 5000, 100000, 0]
-mobs = {'bug':bug,'dog':dog,'soldier':soldier,'ausking':ausking,'archer':archer,'airborne':airborne,'sword':sword,'shield':shield,'junkman':junkman,'ausking':ausking}
-shop = {'sword':25, 'AK47':200, 'shield':25, 'armour':200, 'apple':20, 'pot':5}
+mobs = {
+  'bug':bug,
+  'dog':dog,
+  'soldier':soldier,
+  'archer':archer,
+  'airborne':airborne,
+  'sword':sword,
+  'shield':shield,
+  'junkman':junkman,
+  'ausking':ausking
+}
+shop = {
+  'sword':25,
+  'AK47':200,
+  'shield':25,
+  'armour':200,
+  'apple':20,
+  'steak':200,
+  'pot':5,
+  'pill':50
+}
 
 """con.execute('''CREATE TABLE DB
  (ID INT PRIMARY KEY,
@@ -58,25 +77,24 @@ def exist(ID):
 
 @client.event
 async def on_ready():
-  Timers["deck"] = User_timer(300)
-  Timers["austin"] = User_timer(300)
-  Timers["42"] = User_timer(300)
-  Timers["maze"] = User_timer(300)
-  Timers["fox"] = User_timer(300)
+  Timers["deck"] = User_timer(1200)
+  Timers["austin"] = User_timer(1200)
+  Timers["42"] = User_timer(1200)
+  Timers["maze"] = User_timer(1200)
+  Timers["fox"] = User_timer(1200)
 
 @client.event
 async def on_message(message):
   global in_battle
   msg = message.content
   au = message.author
-
   if au == client.user:
     return
 
   if msg.startswith('$'):
     if not exist(au.id) and not msg[1:].startswith('reg '):
       await message.channel.send('Use "$reg name" to register')
-    
+      
     elif msg[1:].startswith('reg '):
       if not exist(au.id):
         await message.channel.send(f'Welcome {msg[5:]}')
@@ -124,7 +142,7 @@ async def on_message(message):
         await message.channel.send(list)
 
     elif msg[1:] == 'help':
-      await message.channel.send('Help: $help\nRegister: $reg name\nStatistics: $stat\nList all: $list\nTarget : $info target\nAttack: $atk target\nShop: $shop item\nDelete account: $del')
+      await message.channel.send('Help: $help\nRegister: $reg name\nStatistics: $stat\nList all: $list\nTarget : $info target\nAttack: $atk target\nShop: $shop item\nDelete account: $del\n召唤xgt: $call_xgt')
 
     elif msg[1:].startswith('shop ') or msg[1:] == 'shop':
       if msg[6:] in shop:
@@ -144,12 +162,18 @@ async def on_message(message):
           elif msg[6:] == 'armour':
             con.execute(f'UPDATE DB SET DEF = DEF+10 where ID = {au.id}')
             await message.channel.send('我将以高达形态出击！')
-          elif msg[6:] == "apple":
+          elif msg[6:] == 'apple':
             con.execute(f'UPDATE DB SET HP_MAX = HP_MAX+5 where ID = {au.id}')
             await message.channel.send('生命上限提高了！')
+          elif msg[6:] == 'steak':
+            con.execute(f'UPDATE DB SET HP_MAX = HP_MAX+50 where ID = {au.id}')
+            await message.channel.send('生命上限大幅提高了！')
           elif msg[6:] == "pot":
             con.execute(f'UPDATE DB SET HP = {min(u[1], u[2]+10)} where ID = {au.id}')
             await message.channel.send('生命恢复了！')
+          elif msg[6:] == "pill":
+            con.execute(f'UPDATE DB SET HP = {min(u[1], u[2]+100)} where ID = {au.id}')
+            await message.channel.send('全身充满了力量！')
           con.commit()
         else:
           await message.channel.send('Not enough gold')
@@ -199,37 +223,9 @@ async def on_message(message):
 
   if client.user.mention in msg:
     await message.channel.send('SB?')
-
-  if any(word in msg for word in austin) or au.id == 687479429496307929:
-    if Timers["austin"].check_cooldown():
-      Timers["austin"].cooldown()
-      await message.channel.send('咕咕咕')
-
-  if any(word in msg for word in deck) or au.id == 861154258082201621:
-    if Timers["deck"].check_cooldown():
-      Timers["deck"].cooldown()
-      await message.channel.send('dklp')
-
-  if au.id == 614967277833551895:
-    if Timers["42"].check_cooldown():
-      Timers["42"].cooldown()
-      await message.channel.send('42')
-
-  if au.id == 764356009711501333:
-    if Timers["fox"].check_cooldown():
-      Timers["fox"].cooldown()
-      await message.channel.send('<:qwq:987521867340472391>')
-
-  if au.id == 244331186447581186:
-    if Timers["maze"].check_cooldown():
-      Timers["maze"].cooldown()
-      await message.channel.send(file=discord.File("maze.gif"))
-  
+ 
   if au.id == 711802374989283329:
     await message.add_reaction('<nojt:987618578608058388>')
-
-  if "🦇" in msg:
-    await message.channel.send(':bat::no_entry_sign:')
 
   if au.id == 375251797679538177:
     await message.add_reaction('🐑')
